@@ -3,13 +3,17 @@ import shutil
 import tkinter as tk
 from tkinter import messagebox
 from pathlib import Path
+import customtkinter as ctk
+
+ctk.set_appearance_mode("dark")
+ctk.set_default_color_theme("blue")
 
 
 def clear_folder(folder_path, folder_name):
     try:
         folder = Path(folder_path)
         if not folder.exists():
-            messagebox.showerror("錯誤", f"{folder_path} 不存在")
+            messagebox.showerror("Error", f"{folder_path} does not exist.")
             return
         for item in folder.iterdir():
             try:
@@ -18,11 +22,11 @@ def clear_folder(folder_path, folder_name):
                 elif item.is_dir():
                     shutil.rmtree(item)
             except Exception as e:
-                print(f"刪除 {item} 失敗: {e}")
+                print(f"Failed to delete {item} : {e}")
 
-        messagebox.showinfo("清理完成", f"已成功清理{folder_name}資料夾")
+        messagebox.showinfo("Done!", f"Files in {folder_name} have been deleted.")
     except Exception as e:
-        messagebox.showerror("錯誤", str(e))
+        messagebox.showerror("Error", str(e))
 
 #clean %temp%
 def clear_temp():
@@ -35,14 +39,33 @@ def clear_prefetch():
     clear_folder(prefetch_path, 'prefetch')
 
 #window
-root = tk.Tk()
-root.title("暫存檔清理工具")
-root.geometry("300x200")
+app = ctk.CTk()
 
-btn_temp = tk.Button(root, text="清理 temp", command=clear_temp, width=20, height=2)
-btn_temp.pack(pady=30)
+app.title("Temp Cleaner")
+app.geometry("300x300")
 
-btn_prefetch = tk.Button(root, text="清理 prefetch", command=clear_prefetch, width=20, height=2)
-btn_prefetch.pack(pady=5)
+#temp btn
+btn_temp = ctk.CTkButton(
+                        master=app, 
+                        text="CLEAR TEMP",
+                        corner_radius=72,
+                        width=200, 
+                        height=42,
+                        font=("Arial", 16, "bold"),
+                        command=clear_temp
+                        )
+btn_temp.place(relx=0.5, rely=0.4, anchor=tk.CENTER)
 
-root.mainloop()
+#prefetch btn
+btn_pre = ctk.CTkButton(
+                        master=app, 
+                        text="CLEAR PREFETCH",
+                        corner_radius=72, 
+                        width=200, 
+                        height=42,
+                        font=("Arial", 16, "bold"),
+                        command=clear_prefetch
+                        )
+btn_pre.place(relx=0.5, rely=0.6, anchor=tk.CENTER)
+
+app.mainloop()
